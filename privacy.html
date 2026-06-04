@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy — Catapult Craft Puzzle</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "SF Pro Rounded", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 10% 85%, rgba(56, 189, 248, 0.2) 0%, transparent 45%),
+                radial-gradient(circle at 90% 10%, rgba(251, 146, 60, 0.18) 0%, transparent 40%),
+                linear-gradient(180deg, #e8f4fc 0%, #f8fafc 100%);
+            color: #1e3a5f;
+            line-height: 1.7;
+        }
+
+        .accent-bar {
+            height: 6px;
+            background: linear-gradient(90deg, #0284c7, #38bdf8, #fb923c, #4ade80);
+        }
+
+        .shell {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 0 20px 64px;
+        }
+
+        .masthead {
+            padding: 32px 0 28px;
+            text-align: center;
+        }
+
+        .masthead .label {
+            display: inline-block;
+            font-size: 0.62rem;
+            font-weight: 800;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: #0369a1;
+            background: #e0f2fe;
+            padding: 6px 12px;
+            border-radius: 6px;
+            margin-bottom: 14px;
+        }
+
+        .masthead h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 10px;
+        }
+
+        .masthead p {
+            font-size: 0.98rem;
+            color: #475569;
+            max-width: 540px;
+            margin: 0 auto;
+        }
+
+        .nav-link {
+            display: block;
+            text-align: center;
+            padding: 14px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: #0284c7;
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.85);
+            border-bottom: 2px solid #bae6fd;
+        }
+
+        .nav-link:hover {
+            color: #0369a1;
+        }
+
+        .data-panel {
+            margin: 28px 0;
+            padding: 0;
+            list-style: none;
+            display: grid;
+            gap: 0;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 2px solid #38bdf8;
+            box-shadow: 0 14px 36px rgba(2, 132, 199, 0.12);
+        }
+
+        .data-panel li {
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            background: #fff;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .data-panel li:last-child {
+            border-bottom: none;
+        }
+
+        .data-panel .key {
+            padding: 18px 20px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #fff;
+            background: linear-gradient(180deg, #0ea5e9, #0284c7);
+            display: flex;
+            align-items: center;
+        }
+
+        .data-panel .val {
+            padding: 18px 22px;
+            font-size: 0.9rem;
+            color: #334155;
+        }
+
+        .data-panel .val strong {
+            color: #0f172a;
+        }
+
+        .section {
+            margin-bottom: 24px;
+            padding-left: 20px;
+            border-left: 4px solid #38bdf8;
+        }
+
+        .section.orange {
+            border-left-color: #fb923c;
+        }
+
+        .section.green {
+            border-left-color: #4ade80;
+        }
+
+        .section h2 {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 10px;
+        }
+
+        .section p,
+        .section ul {
+            font-size: 0.9rem;
+            color: #475569;
+        }
+
+        .section ul {
+            margin: 10px 0 0 18px;
+        }
+
+        .section li {
+            margin-bottom: 6px;
+        }
+
+        .notice-strip {
+            margin: 32px 0 24px;
+            padding: 18px 22px;
+            font-size: 0.84rem;
+            color: #64748b;
+            background: #fff;
+            border-radius: 14px;
+            border: 2px dashed #94a3b8;
+            text-align: center;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .actions span {
+            flex: 1 1 200px;
+            padding: 12px 14px;
+            font-size: 0.84rem;
+            background: #f1f5f9;
+            border-radius: 12px;
+            color: #475569;
+            border: 1px solid #cbd5e1;
+        }
+
+        .back-wrap {
+            margin-top: 36px;
+            text-align: center;
+        }
+
+        .back-wrap a {
+            display: inline-block;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #fff;
+            text-decoration: none;
+            padding: 14px 28px;
+            border-radius: 999px;
+            background: linear-gradient(180deg, #0ea5e9 0%, #0284c7 100%);
+            border: 2px solid #0369a1;
+            box-shadow: 0 8px 20px rgba(2, 132, 199, 0.35);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .back-wrap a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(2, 132, 199, 0.45);
+        }
+
+        @media (max-width: 560px) {
+            .data-panel li {
+                grid-template-columns: 1fr;
+            }
+            .data-panel .key {
+                padding: 12px 18px;
+            }
+            .masthead h1 {
+                font-size: 1.55rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="accent-bar" aria-hidden="true"></div>
+
+    <a class="nav-link" href="index.html">← Back to Catapult Craft Puzzle</a>
+
+    <div class="shell">
+        <header class="masthead">
+            <span class="label">Privacy summary</span>
+            <h1>Catapult Craft Puzzle</h1>
+            <p>How this puzzle game handles information on iPhone, iPad, and related Apple platforms. Plain-language overview for players—not legal advice.</p>
+        </header>
+
+        <ul class="data-panel" aria-label="App Store privacy summary">
+            <li>
+                <span class="key">Tracking</span>
+                <span class="val"><strong>Usage Data</strong> may be used to track you across apps and websites owned by other companies, per the current App Store privacy label.</span>
+            </li>
+            <li>
+                <span class="key">Linked data</span>
+                <span class="val"><strong>Usage Data</strong> may be collected and linked to your identity as described on the product page.</span>
+            </li>
+            <li>
+                <span class="key">Advertising</span>
+                <span class="val">The App Store listing indicates the app <strong>contains advertising</strong>. Ad partners may process data under their own policies.</span>
+            </li>
+            <li>
+                <span class="key">Age rating</span>
+                <span class="val">Rated <strong>4+</strong>. Parents and guardians can use Screen Time and system settings to manage downloads and device controls.</span>
+            </li>
+        </ul>
+
+        <section class="section">
+            <h2>Scope of this notice</h2>
+            <p>This summary applies only to <strong>Catapult Craft Puzzle</strong> distributed on the Apple App Store (iOS, iPadOS, and compatible platforms listed on the store page). It does not cover unrelated apps, personal websites, or third-party storefronts.</p>
+        </section>
+
+        <section class="section orange">
+            <h2>What the game may collect</h2>
+            <p>According to Apple’s App Privacy disclosure for this title, the developer may handle <strong>usage data</strong>—for example, how you interact with the app—which can be linked to you and used for tracking across other companies’ apps and sites. Exact categories and purposes can change with updates; always review the live App Store “App Privacy” section for your installed version.</p>
+        </section>
+
+        <section class="section">
+            <h2>Data stored on your device</h2>
+            <p>Progress, settings, and other information needed to run levels and craft worlds may be kept locally in the app sandbox on your device. Removing the app or clearing its data in iOS Settings typically deletes that local storage unless a future feature syncs data to a server (which would be reflected in an updated store label).</p>
+        </section>
+
+        <section class="section green">
+            <h2>Advertising and third parties</h2>
+            <p>Because the product may show ads, third-party ad or measurement SDKs could receive device or usage signals permitted by your OS version and consent choices. Those providers process data under their own privacy terms. We do not list individual vendor names here; refer to the App Store developer privacy policy link when available.</p>
+        </section>
+
+        <section class="section">
+            <h2>Children and families</h2>
+            <p>The game is marketed as family-friendly casual puzzle play with a 4+ rating. Guardians should supervise younger players, review in-app purchases if offered, and adjust privacy and advertising settings at the device level.</p>
+        </section>
+
+        <section class="section orange">
+            <h2>Your choices</h2>
+            <div class="actions">
+                <span>Open iOS Settings → Privacy &amp; Security to limit tracking and ad personalization where supported.</span>
+                <span>Check App Privacy on the App Store page after each update.</span>
+                <span>Delete the app to remove local sandbox data tied to the install.</span>
+                <span>Contact product support via the channel on the App Store listing for privacy questions.</span>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Updates to this page</h2>
+            <p>We may revise this summary when gameplay, SDKs, or Apple’s privacy label changes. If anything here conflicts with the store listing or your build, rely on the App Store disclosure and your device settings.</p>
+        </section>
+
+        <p class="notice-strip">
+            No personal contact details or individual developer homepages are listed on this site. For privacy inquiries about Catapult Craft Puzzle, use the support option on the App Store product page.
+        </p>
+
+        <nav class="back-wrap">
+            <a href="index.html">Back to game overview</a>
+        </nav>
+    </div>
+</body>
+
+</html>

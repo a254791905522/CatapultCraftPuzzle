@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catapult Craft Puzzle</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "SF Pro Rounded", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+            background:
+                radial-gradient(circle at 15% 20%, rgba(56, 189, 248, 0.28) 0%, transparent 42%),
+                radial-gradient(circle at 85% 15%, rgba(251, 146, 60, 0.25) 0%, transparent 38%),
+                radial-gradient(circle at 60% 90%, rgba(74, 222, 128, 0.15) 0%, transparent 45%),
+                linear-gradient(165deg, #e8f4fc 0%, #f0f9ff 40%, #fff7ed 100%);
+            color: #1e3a5f;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .grid-bg {
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(56, 189, 248, 0.08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(56, 189, 248, 0.08) 1px, transparent 1px);
+            background-size: 32px 32px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 780px;
+            width: 100%;
+            background: linear-gradient(180deg, #ffffff 0%, #f8fcff 100%);
+            border: 3px solid #38bdf8;
+            border-radius: 24px;
+            padding: 44px 40px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            box-shadow:
+                0 0 0 5px rgba(56, 189, 248, 0.2),
+                0 24px 56px rgba(30, 58, 95, 0.14);
+        }
+
+        .container::after {
+            content: "";
+            position: absolute;
+            bottom: -12px;
+            right: 28px;
+            width: 64px;
+            height: 12px;
+            background: linear-gradient(90deg, #fb923c, #f97316);
+            border-radius: 0 0 8px 8px;
+            opacity: 0.85;
+        }
+
+        .icon-wrap {
+            width: 120px;
+            height: 120px;
+            margin: 12px auto 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 22px;
+            background: linear-gradient(145deg, #7dd3fc 0%, #38bdf8 50%, #0284c7 100%);
+            box-shadow:
+                0 16px 36px rgba(2, 132, 199, 0.35),
+                inset 0 3px 0 rgba(255, 255, 255, 0.4);
+            border: 4px solid #fff;
+        }
+
+        .icon-wrap svg {
+            width: 76px;
+            height: 76px;
+        }
+
+        h1 {
+            font-size: 2.15rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 6px;
+            color: #0f172a;
+        }
+
+        h1 span.accent {
+            color: #0284c7;
+        }
+
+        .tagline {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #0369a1;
+            margin-bottom: 22px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 26px;
+        }
+
+        .chip {
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: #e0f2fe;
+            color: #075985;
+            border: 2px solid #7dd3fc;
+        }
+
+        .chip.orange {
+            background: #fff7ed;
+            color: #c2410c;
+            border-color: #fdba74;
+        }
+
+        .lead {
+            text-align: left;
+            color: #334155;
+            line-height: 1.75;
+            font-size: 1.05rem;
+            margin-bottom: 28px;
+        }
+
+        .lead strong {
+            color: #0f172a;
+        }
+
+        .loop-banner {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 28px;
+            padding: 16px 20px;
+            border-radius: 16px;
+            background: linear-gradient(90deg, #0ea5e9, #38bdf8, #fb923c);
+            color: #fff;
+            font-size: 0.82rem;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .loop-banner span {
+            opacity: 0.7;
+        }
+
+        .world-preview {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+
+        .world-card {
+            padding: 20px 14px;
+            border-radius: 18px;
+            text-align: center;
+            border: 2px solid;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .world-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .world-card.voxel {
+            background: linear-gradient(160deg, #f0fdf4 0%, #dcfce7 100%);
+            border-color: #4ade80;
+            box-shadow: 0 10px 24px rgba(74, 222, 128, 0.2);
+        }
+
+        .world-card.toy {
+            background: linear-gradient(160deg, #fff7ed 0%, #ffedd5 100%);
+            border-color: #fb923c;
+            box-shadow: 0 10px 24px rgba(251, 146, 60, 0.22);
+        }
+
+        .world-card.ice {
+            background: linear-gradient(160deg, #fdf2f8 0%, #fce7f3 100%);
+            border-color: #f472b6;
+            box-shadow: 0 10px 24px rgba(244, 114, 182, 0.2);
+        }
+
+        .world-card .emoji {
+            font-size: 1.75rem;
+            margin-bottom: 8px;
+            line-height: 1;
+        }
+
+        .world-card h3 {
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 6px;
+            color: #0f172a;
+        }
+
+        .world-card p {
+            font-size: 0.78rem;
+            color: #475569;
+            line-height: 1.45;
+        }
+
+        .how-to {
+            text-align: left;
+            margin-bottom: 28px;
+            padding: 24px 26px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%);
+            border: 2px solid #bae6fd;
+        }
+
+        .how-to h2 {
+            font-size: 0.78rem;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: #0284c7;
+            margin-bottom: 14px;
+        }
+
+        .how-to ol {
+            margin: 0;
+            padding-left: 20px;
+            color: #475569;
+            font-size: 0.93rem;
+            line-height: 1.65;
+        }
+
+        .how-to li {
+            margin-bottom: 8px;
+        }
+
+        .how-to li strong {
+            color: #0f172a;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            text-align: left;
+            margin-bottom: 28px;
+        }
+
+        .feature-card {
+            background: #ffffff;
+            border: 2px solid rgba(56, 189, 248, 0.35);
+            border-radius: 16px;
+            padding: 18px 16px;
+            transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+        }
+
+        .feature-card:hover {
+            border-color: #fb923c;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(30, 58, 95, 0.1);
+        }
+
+        .feature-card h3 {
+            font-size: 0.84rem;
+            color: #0369a1;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .feature-card p {
+            font-size: 0.87rem;
+            color: #475569;
+            line-height: 1.55;
+        }
+
+        .cta {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 16px 36px;
+            font-size: 1.02rem;
+            font-weight: 700;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 999px;
+            background: linear-gradient(180deg, #0ea5e9 0%, #0284c7 100%);
+            box-shadow: 0 8px 24px rgba(2, 132, 199, 0.45);
+            border: 2px solid #0369a1;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(2, 132, 199, 0.55);
+        }
+
+        .foot {
+            margin-top: 26px;
+            padding-top: 20px;
+            border-top: 2px solid rgba(56, 189, 248, 0.25);
+            font-size: 0.88rem;
+            color: #64748b;
+        }
+
+        .foot a {
+            color: #0284c7;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .foot a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 620px) {
+            .world-preview {
+                grid-template-columns: 1fr;
+            }
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+            .container {
+                padding: 36px 22px;
+            }
+            h1 {
+                font-size: 1.65rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="grid-bg" aria-hidden="true"></div>
+
+    <div class="container">
+        <div class="icon-wrap" aria-hidden="true">
+            <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect x="8" y="40" width="48" height="8" rx="2" fill="#0f172a" opacity="0.15"/>
+                <path d="M12 44 L52 44" stroke="#0369a1" stroke-width="3" stroke-linecap="round"/>
+                <path d="M20 44 L28 20 L36 44 Z" fill="#fb923c" stroke="#ea580c" stroke-width="1.5"/>
+                <circle cx="28" cy="16" r="6" fill="#38bdf8" stroke="#0284c7" stroke-width="1.5"/>
+                <rect x="22" y="8" width="12" height="8" rx="2" fill="#4ade80"/>
+                <rect x="38" y="32" width="10" height="10" rx="2" fill="#7dd3fc"/>
+                <rect x="16" y="30" width="8" height="8" rx="1" fill="#f472b6"/>
+            </svg>
+        </div>
+
+        <h1>Catapult <span class="accent">Craft Puzzle</span></h1>
+        <p class="tagline">Merge · load · launch · build</p>
+
+        <div class="chips">
+            <span class="chip">Free</span>
+            <span class="chip">iOS 15+</span>
+            <span class="chip">Puzzle</span>
+            <span class="chip orange">iPhone &amp; iPad</span>
+        </div>
+
+        <p class="lead">
+            <strong>Load the catapult and craft in 3D.</strong> Catapult Craft Puzzle is a casual merge-and-launch puzzle game where you spawn numbered blocks, merge matching pieces to upgrade them, and fire your creation at 3D targets to complete each build. Every level pushes your aim and logic with strict move and time limits—think ahead, aim clean, and do not waste your shots.
+        </p>
+
+        <div class="loop-banner" aria-label="Core gameplay loop">
+            Spawn <span>·</span> Merge <span>·</span> Load <span>·</span> Launch
+        </div>
+
+        <div class="world-preview">
+            <div class="world-card voxel">
+                <div class="emoji" aria-hidden="true">🎨</div>
+                <h3>Voxel Painter</h3>
+                <p>Launch colorful cubes to paint low-poly models—swords, dogs, arcades, and more.</p>
+            </div>
+            <div class="world-card toy">
+                <div class="emoji" aria-hidden="true">🧸</div>
+                <h3>Toy Workshop</h3>
+                <p>Merge wooden shapes and snap them into blueprints with satisfying craft sounds.</p>
+            </div>
+            <div class="world-card ice">
+                <div class="emoji" aria-hidden="true">🍦</div>
+                <h3>Ice Cream Parlor</h3>
+                <p>Stack flavored scoops into holographic cones and sundaes, layer by layer.</p>
+            </div>
+        </div>
+
+        <section class="how-to">
+            <h2>How to play</h2>
+            <ol>
+                <li><strong>Spawn and merge</strong> — Tap to drop numbered objects on the board; match identical numbers to upgrade tiers.</li>
+                <li><strong>Aim and launch</strong> — Load your upgraded piece into the catapult and fire at the 3D target to snap it into place.</li>
+                <li><strong>Beat the clock</strong> — Finish each objective before your moves or time run out.</li>
+                <li><strong>Explore craft worlds</strong> — Unlock new themes, sharper builds, and rescue power-ups when you need a second chance.</li>
+            </ol>
+        </section>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3>Addictive loop</h3>
+                <p>Spawn, merge, load, and fire—a fresh puzzle rhythm that stays engaging level after level.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Strategic pressure</h3>
+                <p>Master tight move and time limits while planning every merge and shot.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Stunning 3D builds</h3>
+                <p>Crisp snap animations and vibrant visuals across expanding craft worlds.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Rescue power-ups</h3>
+                <p>Extra moves, extra time, and freeze time help you recover and secure the win.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Color matching</h3>
+                <p>Align hues and shapes with targets before the level timer expires.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Easy to pick up</h3>
+                <p>Tap-friendly controls designed for quick sessions on phone and tablet.</p>
+            </div>
+        </div>
+
+        <a href="https://apps.apple.com/us/app/catapult-craft-puzzle/id6775389668?uo=4" class="cta" target="_blank" rel="noopener noreferrer">Download on the App Store</a>
+
+        <div class="foot">
+            <a href="privacy.html">Privacy overview</a>
+        </div>
+    </div>
+</body>
+
+</html>
